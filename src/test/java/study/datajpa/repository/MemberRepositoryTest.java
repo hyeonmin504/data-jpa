@@ -221,4 +221,10 @@ class MemberRepositoryTest {
         findMember.setUsername("member2");  //적용x
         em.flush();
     }
+
+    @Test
+    public void callCustom() {
+        List<Member> memberCustom = memberRepository.findMemberCustom();
+    }
+
 }
