@@ -227,4 +227,52 @@ class MemberRepositoryTest {
         List<Member> memberCustom = memberRepository.findMemberCustom();
     }
 
+
+    @Test
+    public void projections() throws Exception {
+        //given
+        Team teamA = new Team("TeamA");
+        Team teamB = new Team("TeamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 10, teamB);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        em.flush();
+        em.clear();
+        //when
+        List<UsernameOnly> m11 = memberRepository.findProjectionByUsername("m1");
+
+        for (UsernameOnly usernameOnly : m11) {
+            System.out.println("usernameOnly = " + usernameOnly);
+        }
+        //then
+    }
+
+    @Test
+    public void nativeQuery() throws Exception {
+        //given
+        Team teamA = new Team("TeamA");
+        Team teamB = new Team("TeamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 10, teamB);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        em.flush();
+        em.clear();
+        //when
+        Page<MemberProjection> byNativeProjection = memberRepository.findByNativeProjection(PageRequest.of(0,10));
+        for (MemberProjection memberProjection : byNativeProjection) {
+            System.out.println("memberProjection = " + memberProjection.getTeamName());
+            System.out.println("memberProjection = " + memberProjection.getUsername());
+        }
+        //then
+    }
 }
